@@ -13,48 +13,40 @@ RishiAI is a voice-activated command execution system that uses speech recogniti
 - **Logging:** Captures and logs command execution results and errors.
 - **Dynamic Command Generation:** Uses the Groq API to generate commands based on system information and task descriptions.
 
-## Installation
+## Installation and Setup
 
-1. **Clone the Repository:**
+1. **Download the Executable:**
 
-   ```bash
-   git clone <repository-url>
-   cd <repository-directory>
-   ```
+   Download the latest executable file for your operating system from the releases page (to be updated soon).
 
-2. **Create and Activate a Virtual Environment:**
+2. **Configure API Key:**
 
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows use `venv\Scripts\activate`
-   ```
-
-3. **Install Dependencies:**
-
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-
-4. **Configure API Key:**
-
-   Create a file named `AI_Creds.py` in the project root directory and add the following content:
+   Create a file named `AI_Creds.py` in the same directory as the executable and add the following content:
 
    ```python
    GROQ_API_KEY = '<your-groq-api-key>'
    ```
 
+   Make sure to replace `<your-groq-api-key>` with your actual Groq API key.
+
+3. **Prepare Sound Files:**
+
+   Ensure that the sound files `ls.wav` and `le.wav` are available in the `aud` directory. These files are used for activation and completion sounds. If these files are not included in the download, place them in the `aud` directory manually.
+
 ## Usage
 
 ### Running the System
 
-To start the RishiAI system, run the following command:
+To start the RishiAI system, simply run the executable file you downloaded:
 
-```bash
-python <script-name>.py
-```
+- **On Windows:** Double-click the `.exe` file.
+- **On Linux/Mac:** Use the terminal to navigate to the directory containing the executable and run it:
 
-Replace `<script-name>` with the name of the Python script file.
+  ```bash
+  ./<executable-name>
+  ```
+
+  Replace `<executable-name>` with the name of the downloaded executable file.
 
 ### How It Works
 
@@ -112,7 +104,7 @@ Replace `<script-name>` with the name of the Python script file.
 
 ## Contributing
 
-Contributions are welcome! Please fork the repository and submit a pull request with your changes.
+Contributions are welcome! Please contact the project maintainers if you wish to contribute.
 
 ## License
 
