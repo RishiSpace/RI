@@ -157,6 +157,8 @@ def handle_gui_interaction(command):
         elif "click" in command:
             x, y = map(int, re.findall(r'\d+', command))
             pyautogui.click(x, y)
+        elif "alt+f4" in command:
+            pyautogui.hotkey('alt', 'f4')
         else:
             logging.error(f"Unknown GUI interaction command: {command}")
     except Exception as e:
@@ -169,7 +171,7 @@ def execute_commands(commands, os_type):
         futures = []
         for command in commands:
             command = command.strip()
-            if "type" in command or "click" in command:
+            if "type" in command or "click" in command or "alt+f4" in command:
                 # Handle GUI interaction commands
                 futures.append(executor.submit(handle_gui_interaction, command))
             else:
@@ -184,56 +186,67 @@ def execute_commands(commands, os_type):
                 logging.error(f"Exception in command execution: {e}")
                 print(f"Exception in command execution: {e}")
 
+def handle_quit_command():
+    """Handles quit commands and terminates the program."""
+    print("Quitting...")
+    pygame.mixer.quit()
+    sys.exit()
+
 def listen_for_command():
     """Listens for the activation phrases and then listens for further commands."""
     recognizer = sr.Recognizer()
     mic = sr.Microphone()
 
-    activation_phrases = ["hey rishi", "yo rishi", "hey laptop", "yo laptop", "hey pc", "yo pc", "ay rishi", "ay man", "hey man", "ay laptop"]
+    activation_phrases = ["hey rishi", "yo rishi", "hey laptop", "yo laptop"]
+    quit_phrases = ["rishi quit", "quit now"]
 
-    with mic as source:
-        print("Listening for activation phrases...")
-        recognizer.adjust_for_ambient_noise(source)
+    while True:
+        with mic as source:
+            print("Listening for activation phrase...")
+            audio = recognizer.listen(source)
 
-        while True:
-            try:
-                audio = recognizer.listen(source)
-                speech_text = recognizer.recognize_google(audio).lower()
-                print(f"Heard: {speech_text}")
+        try:
+            text = recognizer.recognize_google(audio).lower()
+            print(f"Heard: {text}")
 
-                if any(phrase in speech_text for phrase in activation_phrases):
-                    # Play ping sound
-                    play_sound(PING_SOUND_FILE)
-                    
-                    print("Activation phrase detected. Listening for command...")
-                    audio = recognizer.listen(source)
-                    command_text = recognizer.recognize_google(audio)
-                    print(f"Command received: {command_text}")
+            if any(phrase in text for phrase in quit_phrases):
+                handle_quit_command()
+                
+            if any(phrase in text for phrase in activation_phrases):
+                play_sound(PING_SOUND_FILE)
+                print("Activation phrase detected. Listening for commands...")
 
-                    os_type = get_os_type()
-                    result = generate_command(command_text, os_type)
-                    
-                    if result['request']:
-                        # Send the request for more information back to LLM
-                        print(f"LLM Request: {result['request']}")
-                        # You might want to add a function to handle sending this back to LLM
-                        # For now, just printing it
-                    else:
-                        # Split commands by newline and execute
-                        command_list = result['commands'].strip().split('\n')
-                        execute_commands(command_list, os_type)
+                while True:
+                    with mic as source:
+                        print("Listening for command...")
+                        audio = recognizer.listen(source)
 
-                    # Play pong sound
-                    play_sound(PONG_SOUND_FILE)
-                else:
-                    print("Activation phrase not detected. Listening again...")
-            
-            except sr.UnknownValueError:
-                # Handle cases where speech is unintelligible
-                print("Could not understand audio.")
-            except sr.RequestError as e:
-                # Handle request errors
-                print(f"Could not request results; {e}")
+                    try:
+                        command_text = recognizer.recognize_google(audio).lower()
+                        print(f"Heard command: {command_text}")
+
+                        if any(phrase in command_text for phrase in quit_phrases):
+                            handle_quit_command()
+
+                        os_type = get_os_type()
+                        result = generate_command(command_text, os_type)
+                        
+                        if result["request"]:
+                            print(f"Request for more information: {result['request']}")
+                        else:
+                            commands = result["commands"].split('\n')
+                            execute_commands(commands, os_type)
+                            play_sound(PONG_SOUND_FILE)
+
+                    except sr.UnknownValueError:
+                        print("Sorry, I did not understand that.")
+                    except sr.RequestError as e:
+                        print(f"Error with the speech recognition service: {e}")
+
+        except sr.UnknownValueError:
+            print("Sorry, I did not understand that.")
+        except sr.RequestError as e:
+            print(f"Error with the speech recognition service: {e}")
 
 if __name__ == "__main__":
     listen_for_command()

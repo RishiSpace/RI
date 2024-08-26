@@ -2,3 +2,4 @@ AI_Creds.py
 .gitignore
 /bin/
 /RishiAI/
+terminal_output.log
