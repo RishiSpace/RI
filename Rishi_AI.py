@@ -211,11 +211,12 @@ def listen_for_command():
 
             if any(phrase in text for phrase in quit_phrases):
                 handle_quit_command()
-                
+
             if any(phrase in text for phrase in activation_phrases):
                 play_sound(PING_SOUND_FILE)
                 print("Activation phrase detected. Listening for commands...")
 
+                # Switch to command listening mode
                 while True:
                     with mic as source:
                         print("Listening for command...")
@@ -238,6 +239,9 @@ def listen_for_command():
                             execute_commands(commands, os_type)
                             play_sound(PONG_SOUND_FILE)
 
+                        # Exit command listening mode and return to activation phrase listening
+                        break
+
                     except sr.UnknownValueError:
                         print("Sorry, I did not understand that.")
                     except sr.RequestError as e:
@@ -250,3 +254,4 @@ def listen_for_command():
 
 if __name__ == "__main__":
     listen_for_command()
+

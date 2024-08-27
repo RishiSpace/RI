@@ -17,7 +17,7 @@ RishiAI is a voice-activated command execution system that uses speech recogniti
 
 1. **Download the Executable:**
 
-   Download the latest executable file for your operating system from the releases page (to be updated soon).
+   Download the latest executable file for your operating system from the [releases](https://github.com/RishiSpace/RishiAI/releases) page.
 
 2. **Configure API Key:**
 
