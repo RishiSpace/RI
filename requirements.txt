@@ -3,3 +3,6 @@ pyautogui
 psutil
 speechrecognition
 groq
+setuptools
+pyaudio
+auto-py-to-exe

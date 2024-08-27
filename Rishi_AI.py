@@ -197,7 +197,7 @@ def listen_for_command():
     recognizer = sr.Recognizer()
     mic = sr.Microphone()
 
-    activation_phrases = ["hey rishi", "yo rishi", "hey laptop", "yo laptop"]
+    activation_phrases = ["hey rishi", "yo rishi", "hey laptop", "yo laptop", "hey man", "Hey pc", "yo pc", "yo man", "ay rishi", "ay pc"]
     quit_phrases = ["rishi quit", "quit now"]
 
     while True:
