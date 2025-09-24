@@ -1,4 +1,4 @@
-# RishiAI
+# Rishi Intelligence
 
 ## Overview
 
