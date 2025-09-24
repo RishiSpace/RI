@@ -2,7 +2,7 @@
 
 ## Overview
 
-RishiAI is a voice-activated command execution system that uses speech recognition to listen for activation phrases and commands. It integrates with various systems and performs tasks based on recognized commands. The system supports both Windows and Linux/Mac operating systems, leveraging the Groq API for command generation and PyAutoGUI for GUI interactions.
+Rishi Intelligence is a voice-activated command execution system that uses speech recognition to listen for activation phrases and commands. It integrates with various systems and performs tasks based on recognized commands. The system supports both Windows and Linux/Mac operating systems, leveraging the Groq API for command generation and PyAutoGUI for GUI interactions.
 
 ## Features
 
@@ -17,7 +17,7 @@ RishiAI is a voice-activated command execution system that uses speech recogniti
 
 1. **Download the Executable:**
 
-   Download the latest executable file for your operating system from the [releases](https://github.com/RishiSpace/RishiAI/releases) page.
+   Download the latest executable file for your operating system from the [releases](https://github.com/RishiSpace/RI/releases) page.
 
 2. **Configure API Key:**
 
@@ -37,7 +37,7 @@ RishiAI is a voice-activated command execution system that uses speech recogniti
 
 ### Running the System
 
-To start the RishiAI system, simply run the executable file you downloaded:
+To start the Rishi Intelligence system, simply run the executable file you downloaded:
 
 - **On Windows:** Double-click the `.exe` file.
 - **On Linux/Mac:** Use the terminal to navigate to the directory containing the executable and run it:
