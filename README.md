@@ -1,110 +1,66 @@
-# Rishi Intelligence
+# Rishi Intelligence (RI)
 
 ## Overview
 
-Rishi Intelligence is a voice-activated command execution system that uses speech recognition to listen for activation phrases and commands. It integrates with various systems and performs tasks based on recognized commands. The system supports both Windows and Linux/Mac operating systems, leveraging the Groq API for command generation and PyAutoGUI for GUI interactions.
+Rishi Intelligence (RI) is a locally-hosted, voice-activated AI assistant designed to control your Operating System. 
+
+**v2 Update**: The system has been completely re-architected to run **100% Locally** using:
+- **Ollama**: For the LLM logic (`lfm2.5-thinking:1.2b`).
+- **OpenAI Whisper**: For speech-to-text (running locally).
+- **Python**: For the core logic and OS interaction.
+
+It allows you to control your PC by speaking natural language commands.
 
 ## Features
 
-- **Voice Activation:** Recognizes specific phrases to activate listening for further commands.
-- **Cross-Platform Support:** Executes commands for both Windows and Linux/Mac systems.
-- **Sound Notifications:** Plays sound effects to indicate command recognition and completion.
-- **GUI Interactions:** Uses PyAutoGUI to handle tasks that involve GUI elements.
-- **Logging:** Captures and logs command execution results and errors.
-- **Dynamic Command Generation:** Uses the Groq API to generate commands based on system information and task descriptions.
+- **Local & Private**: No data leaves your machine. All processing (Voice & AI) is done on your hardware.
+- **Voice Activation**: Wakes up to the phrase **"RI"** (or "Hey RI").
+- **OS Awareness**: Automatically detects your OS (Arch Linux, etc.), Desktop Environment (GNOME, KDE), and User to execute the correct commands.
+- **Thinking Mode**: The AI "thinks" before acting, ensuring safer and more accurate command execution.
+- **MCP-Style Tools**: Uses a structured tool-calling interface to execute shell commands, check time, etc.
 
-## Installation and Setup
+## Setup
 
-1. **Download the Executable:**
+### Prerequisites
+1.  **Ollama**: Install [Ollama](https://ollama.com/) and ensure it is running (`ollama serve`).
+2.  **Model**: The script automatically pulls `lfm2.5-thinking:1.2b`.
+3.  **Python 3.10+**
 
-   Download the latest executable file for your operating system from the [releases](https://github.com/RishiSpace/RI/releases) page.
+### Installation
 
-2. **Configure API Key:**
+1.  **Clone the Repository**:
+    ```bash
+    git clone https://github.com/RishiSpace/RI.git
+    cd RI
+    ```
 
-   Create a file named `AI_Creds.py` in the same directory as the executable and add the following content:
+2.  **Install System Dependencies** (Arch Linux Example):
+    ```bash
+    sudo pacman -S portaudio ffmpeg espeak-ng xclip
+    ```
 
-   ```python
-   GROQ_API_KEY = '<your-groq-api-key>'
-   ```
-
-   Make sure to replace `<your-groq-api-key>` with your actual Groq API key.
-
-3. **Prepare Sound Files:**
-
-   Ensure that the sound files `ls.wav` and `le.wav` are available in the `aud` directory. These files are used for activation and completion sounds. If these files are not included in the download, place them in the `aud` directory manually.
+3.  **Create Virtual Environment**:
+    ```bash
+    python -m venv venv
+    source venv/bin/activate
+    pip install -r requirements.txt
+    ```
 
 ## Usage
 
-### Running the System
+1.  **Run the Assistant**:
+    ```bash
+    ./venv/bin/python RI_New.py
+    ```
 
-To start the Rishi Intelligence system, simply run the executable file you downloaded:
+2.  **Interact**:
+    - **Wake**: Say "**RI**", "**Hey RI**", or "**Computer**".
+    - **Command**: Say "List files in this directory", "Lock the PC", "What time is it?".
+    - **Quit**: Say "Rishi Quit".
 
-- **On Windows:** Double-click the `.exe` file.
-- **On Linux/Mac:** Use the terminal to navigate to the directory containing the executable and run it:
+## Legacy Version
 
-  ```bash
-  ./<executable-name>
-  ```
-
-  Replace `<executable-name>` with the name of the downloaded executable file.
-
-### How It Works
-
-1. **Listening for Activation Phrases:**
-
-   The system listens for specific activation phrases. When an activation phrase is detected, it plays a sound and starts listening for a command.
-
-2. **Processing Commands:**
-
-   Once a command is received, the system uses the Groq API to generate appropriate commands based on the system type and the task description.
-
-3. **Executing Commands:**
-
-   Commands are executed based on the operating system. The system handles both non-GUI commands and GUI interactions (e.g., typing text or clicking on screen coordinates).
-
-4. **Handling Requests for More Information:**
-
-   If the Groq API response requires additional information, the system prints a request for more details. Users should provide this information for accurate command generation.
-
-5. **Logging:**
-
-   Command outputs and errors are logged in `terminal_output.log`.
-
-## Configuration
-
-- **Sound Files:**
-  
-  Ensure the sound files `ls.wav` and `le.wav` are present in the `aud` directory for the activation and completion sounds.
-
-- **API Configuration:**
-
-  Update `AI_Creds.py` with your Groq API key.
-
-## Commands and GUI Interactions
-
-- **Command Format:**
-  
-  Commands are executed directly in PowerShell (Windows) or Bash (Linux/Mac). For GUI interactions, use commands like "type" or "click" with appropriate parameters.
-
-- **Example Commands:**
-  
-  - **Windows/PowerShell:** `Get-ChildItem`
-  - **Linux/Bash:** `ls -l`
-  - **GUI Interaction (Typing):** `type Hello, World!`
-  - **GUI Interaction (Clicking):** `click 100 200`
-
-## Troubleshooting
-
-- **Common Issues:**
-  - **Unintelligible Audio:** Ensure you are in a quiet environment and speak clearly.
-  - **Request Errors:** Verify network connectivity and API key.
-
-- **Logging:**
-  - Check `terminal_output.log` for detailed logs of command execution and errors.
-
-## Contributing
-
-Contributions are welcome! Please contact the project maintainers if you wish to contribute.
+The previous version of RI (using Groq API and remote speech recognition) has been moved to the `Archive/` directory.
 
 ## License
 
