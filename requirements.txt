@@ -1,8 +1,14 @@
 pygame
 pyautogui
 psutil
-speechrecognition
+SpeechRecognition
 groq
 setuptools
 pyaudio
 auto-py-to-exe
+ollama
+openai-whisper
+pyttsx3
+torch
+numpy
+soundfile
