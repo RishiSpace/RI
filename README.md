@@ -15,7 +15,11 @@ Locally-hosted AI agent with **fast text + voice conversation** and **full syste
 
 1. [Ollama](https://ollama.com/) running (`ollama serve`)
 2. Python 3.10+
-3. System packages (Arch example):
+3. `huggingface-cli` (to download the custom GGUF model):
+   ```bash
+   pip install -U "huggingface_hub[cli]"
+   ```
+4. System packages (Arch example):
    ```bash
    sudo pacman -S portaudio ffmpeg espeak-ng tk xclip wl-clipboard xdotool scrot
    ```
@@ -28,8 +32,46 @@ cd RI
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-ollama pull ri-instruct:latest   # default model (fast instruct, thinking disabled)
 ```
+
+## Model Setup (required)
+
+**RI-Instruct is not available on the Ollama registry.** You must download the GGUF + Modelfile from Hugging Face and import it locally.
+
+The official `Modelfile` lives in the model repo: https://huggingface.co/RishiSpace/RI-Instruct-v0.1-GGUF
+
+Run the following **from inside the RI directory**:
+
+```bash
+# 1. Download the model weights (~5.9 GB) and the official Modelfile
+huggingface-cli download RishiSpace/RI-Instruct-v0.1-GGUF \
+  RI-Instruct-v0.1-Q5_K_M.gguf Modelfile --local-dir .
+
+# 2. Import it into Ollama (creates the "ri-instruct:latest" tag)
+ollama create ri-instruct:latest -f Modelfile
+```
+
+Verify:
+
+```bash
+ollama list
+```
+
+You should see `ri-instruct:latest`.
+
+**Alternative** (no huggingface-cli):
+
+```bash
+curl -L -o RI-Instruct-v0.1-Q5_K_M.gguf \
+  https://huggingface.co/RishiSpace/RI-Instruct-v0.1-GGUF/resolve/main/RI-Instruct-v0.1-Q5_K_M.gguf
+
+curl -L -o Modelfile \
+  https://huggingface.co/RishiSpace/RI-Instruct-v0.1-GGUF/raw/main/Modelfile
+```
+
+The `Modelfile` and `.gguf` must be in the same directory when running `ollama create`.
+
+> **Note:** The RI app runs with thinking disabled by default (`RI_THINK=0`) for faster responses. Set `RI_THINK=1` if you want the model to show its reasoning steps.
 
 ## Usage
 
@@ -43,10 +85,10 @@ ollama pull ri-instruct:latest   # default model (fast instruct, thinking disabl
 # Voice only
 ./venv/bin/python main.py --mode voice
 
-# Use a different model
-RI_MODEL=qwen3:8b ./venv/bin/python main.py   # optional other model
+# Use a different model (after creating it in Ollama)
+RI_MODEL=qwen3:8b ./venv/bin/python main.py
 
-# Enable thinking/reasoning (slower but may be smarter for complex tasks)
+# Enable thinking/reasoning on the RI model (slower but may be smarter)
 RI_THINK=1 ./venv/bin/python main.py
 ```
 
@@ -78,7 +120,7 @@ RI_THINK=1 ./venv/bin/python main.py
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `RI_MODEL` | `ri-instruct:latest` | Ollama model |
+| `RI_MODEL` | `ri-instruct:latest` | Ollama model tag (created locally via the steps above) |
 | `RI_THINK` | `0` (false) | Set `1`/`true` to enable model thinking (reasoning steps); or `low`/`medium`/`high` |
 | `RI_WHISPER` | `faster` | STT backend (`faster` or `openai`) |
 | `RI_WHISPER_WAKE` | `base` | Fast wake-word model |

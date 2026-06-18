@@ -1,6 +1,7 @@
 import os
 
 # --- LLM ---
+# Default expects the locally-created tag from Modelfile + RI-Instruct GGUF
 OLLAMA_MODEL = os.environ.get("RI_MODEL", "ri-instruct:latest")
 OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "http://127.0.0.1:11434")
 OLLAMA_OPTIONS = {
