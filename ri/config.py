@@ -1,7 +1,7 @@
 import os
 
 # --- LLM ---
-OLLAMA_MODEL = os.environ.get("RI_MODEL", "lfm2.5:latest")
+OLLAMA_MODEL = os.environ.get("RI_MODEL", "ri-instruct:latest")
 OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "http://127.0.0.1:11434")
 OLLAMA_OPTIONS = {
     "num_gpu": 999,
@@ -9,6 +9,16 @@ OLLAMA_OPTIONS = {
     "num_ctx": 4096,
     "top_p": 0.9,
 }
+
+# Disable model thinking/reasoning for faster responses (supported by many instruct models)
+# Set RI_THINK=1 to enable, RI_THINK=low/medium/high for levels
+_think_env = os.environ.get("RI_THINK", "").lower().strip()
+if _think_env in ("1", "true", "yes", "on"):
+    OLLAMA_THINK = True
+elif _think_env in ("0", "false", "no", "off", ""):
+    OLLAMA_THINK = False
+else:
+    OLLAMA_THINK = _think_env  # e.g. "low", "medium", "high"
 
 # --- Speech ---
 WHISPER_BACKEND = os.environ.get("RI_WHISPER", "faster")  # faster | openai

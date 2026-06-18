@@ -66,6 +66,7 @@ class RIAgent:
                 model=config.OLLAMA_MODEL,
                 messages=[{"role": "user", "content": "ping"}],
                 options=config.OLLAMA_OPTIONS,
+                think=config.OLLAMA_THINK,
             )
             print("Model ready.")
         except Exception as exc:
@@ -131,6 +132,7 @@ class RIAgent:
                     messages=self.messages,
                     tools=self.tools.get_definitions(),
                     options=config.OLLAMA_OPTIONS,
+                    think=config.OLLAMA_THINK,
                 )
                 message = response["message"]
             else:
@@ -141,6 +143,7 @@ class RIAgent:
                     tools=self.tools.get_definitions(),
                     options=config.OLLAMA_OPTIONS,
                     stream=True,
+                    think=config.OLLAMA_THINK,
                 )
                 tool_calls = None
                 content_parts: list[str] = []

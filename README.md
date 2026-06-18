@@ -28,7 +28,7 @@ cd RI
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-ollama pull lfm2.5   # default model tag: lfm2.5:latest
+ollama pull ri-instruct:latest   # default model (fast instruct, thinking disabled)
 ```
 
 ## Usage
@@ -44,7 +44,10 @@ ollama pull lfm2.5   # default model tag: lfm2.5:latest
 ./venv/bin/python main.py --mode voice
 
 # Use a different model
-RI_MODEL=qwen2.5:7b ./venv/bin/python main.py   # optional stronger model
+RI_MODEL=qwen3:8b ./venv/bin/python main.py   # optional other model
+
+# Enable thinking/reasoning (slower but may be smarter for complex tasks)
+RI_THINK=1 ./venv/bin/python main.py
 ```
 
 ### Text commands
@@ -75,7 +78,8 @@ RI_MODEL=qwen2.5:7b ./venv/bin/python main.py   # optional stronger model
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `RI_MODEL` | `lfm2.5:latest` | Ollama model |
+| `RI_MODEL` | `ri-instruct:latest` | Ollama model |
+| `RI_THINK` | `0` (false) | Set `1`/`true` to enable model thinking (reasoning steps); or `low`/`medium`/`high` |
 | `RI_WHISPER` | `faster` | STT backend (`faster` or `openai`) |
 | `RI_WHISPER_WAKE` | `base` | Fast wake-word model |
 | `RI_WHISPER_CMD` | `small` | Command transcription model |

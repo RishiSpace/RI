@@ -18,7 +18,7 @@ def main() -> None:
         default="hybrid",
         help="Interaction mode (default: hybrid = text + voice)",
     )
-    parser.add_argument("--model", help="Ollama model override (default: lfm2.5:latest)")
+    parser.add_argument("--model", help="Ollama model override (default: ri-instruct:latest)")
     args = parser.parse_args()
 
     if args.model:
