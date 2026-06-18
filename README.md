@@ -15,7 +15,7 @@ Locally-hosted AI agent with **fast text + voice conversation** and **full syste
 
 1. [Ollama](https://ollama.com/) running (`ollama serve`)
 2. Python 3.10+
-3. `huggingface-cli` (to download the custom GGUF model):
+3. `hf` CLI (to download the custom GGUF model):
    ```bash
    pip install -U "huggingface_hub[cli]"
    ```
@@ -40,11 +40,13 @@ pip install -r requirements.txt
 
 The official `Modelfile` lives in the model repo: https://huggingface.co/RishiSpace/RI-Instruct-v0.1-GGUF
 
+Always download the latest Modelfile from Hugging Face (do not rely on a local copy) to avoid version mismatches.
+
 Run the following **from inside the RI directory**:
 
 ```bash
 # 1. Download the model weights (~5.9 GB) and the official Modelfile
-huggingface-cli download RishiSpace/RI-Instruct-v0.1-GGUF \
+hf download RishiSpace/RI-Instruct-v0.1-GGUF \
   RI-Instruct-v0.1-Q5_K_M.gguf Modelfile --local-dir .
 
 # 2. Import it into Ollama (creates the "ri-instruct:latest" tag)
@@ -59,7 +61,7 @@ ollama list
 
 You should see `ri-instruct:latest`.
 
-**Alternative** (no huggingface-cli):
+**Alternative** (no `hf` CLI):
 
 ```bash
 curl -L -o RI-Instruct-v0.1-Q5_K_M.gguf \
