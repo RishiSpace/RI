@@ -14,25 +14,32 @@ Locally-hosted AI agent with **fast text + voice conversation** and **full syste
 ## Prerequisites
 
 1. [Ollama](https://ollama.com/) running (`ollama serve`)
-2. Python 3.10+
+2. Python 3.10+ (3.12 or 3.13 **strongly recommended on Windows** for wheel availability)
 3. `hf` CLI (to download the custom GGUF model):
    ```bash
    pip install -U "huggingface_hub[cli]"
    ```
-4. System packages (Arch example):
-   ```bash
-   sudo pacman -S portaudio ffmpeg espeak-ng tk xclip wl-clipboard xdotool scrot
-   ```
+4. System packages
+   - **Linux** (Arch example):
+     ```bash
+     sudo pacman -S portaudio ffmpeg espeak-ng tk xclip wl-clipboard xdotool scrot
+     ```
+   - **Windows**: Microsoft Visual C++ Redistributable (latest). Many dependencies install their own DLLs.
 
 ## Install
 
 ```bash
 git clone https://github.com/RishiSpace/RI.git
 cd RI
-python -m venv venv
+python -m venv venv          # or RI-Env on Windows
+# Linux:
 source venv/bin/activate
+# Windows:
+# venv\Scripts\activate
 pip install -r requirements.txt
 ```
+
+See the **Packaging (binaries)** section below for Windows-specific install troubleshooting (especially pygame + pyaudio).
 
 ## Model Setup (required)
 
@@ -171,23 +178,68 @@ Run:
 
 ### Windows
 
-1. On a **Windows** machine (cross-building from Linux is unreliable for this stack):
-   - `python -m venv venv`
-   - `venv\Scripts\activate`
-   - `pip install -r requirements.txt pyinstaller`
-2. Run:
+Cross-building from Linux is **not reliable** (native wheels and DLLs differ). Build on a real Windows machine.
 
-   ```bat
-   scripts\build_windows.bat
-   ```
+#### Recommended Python version
+Use **Python 3.12 or 3.13**. Python 3.14 frequently lacks pre-built wheels for `pygame`, `pyaudio`, `torch`, `faster-whisper`, etc., causing long and often failing source compiles.
 
-Or directly:
+#### Install steps (PowerShell / CMD)
+
+```powershell
+# 1. Create and activate a venv (example name RI-Env)
+python -m venv RI-Env
+RI-Env\Scripts\activate
+
+# 2. Upgrade core tools
+python -m pip install --upgrade pip setuptools wheel
+
+# 3. Install pygame FIRST (this is the package that usually fails)
+pip install pygame
+
+# If you see the error:
+#   ModuleNotFoundError: No module named 'setuptools._distutils.msvccompiler'
+# run these and then retry the pygame line:
+#   pip install "setuptools<70"
+#   pip install pygame
+
+# 4. Install the rest of the dependencies
+pip install -r requirements.txt
+
+# 5. PyInstaller
+pip install --upgrade pyinstaller
+```
+
+Special cases:
+- **pyaudio** often fails on Windows:
+  ```powershell
+  pip install pipwin
+  pipwin install pyaudio
+  ```
+- If any heavy package (torch, onnxruntime, faster-whisper) complains about CUDA vs CPU, install the CPU-only torch first if needed:
+  ```powershell
+  pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+  ```
+
+#### Build the binary
 
 ```bat
+scripts\build_windows.bat
+```
+
+Or manually:
+
+```powershell
 python -m PyInstaller RI.spec --clean --noconfirm
 ```
 
-Result: `dist\RI\RI.exe`
+Result: `dist\RI\RI.exe` (and supporting files in `dist\RI\` for the default onedir layout).
+
+Run the packaged app:
+```powershell
+dist\RI\RI.exe --mode text
+```
+
+You can zip the entire `dist\RI` folder. The target PC will still need Ollama running.
 
 ### Important notes about binaries
 

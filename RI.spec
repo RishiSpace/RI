@@ -129,6 +129,12 @@ for mod in ("ctranslate2", "tokenizers", "safetensors", "huggingface_hub"):
     except Exception:
         pass
 
+# Explicit ones seen missing during Windows build analysis
+hiddenimports.extend([
+    "pygame.mixer",
+    "soundfile._sndfile",
+])
+
 hiddenimports = sorted(set(hiddenimports))
 
 # ------------------------------------------------------------------

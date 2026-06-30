@@ -17,3 +17,15 @@ soundfile
 torch
 distro
 setuptools
+
+# Windows notes:
+# - pygame often requires building from source on new Python versions (e.g. 3.14).
+#   If it fails with "setuptools._distutils.msvccompiler", run:
+#     pip install "setuptools<70"
+#     pip install pygame
+#   Then re-run the requirements install.
+# - pyaudio on Windows frequently needs special handling:
+#     pip install pipwin
+#     pipwin install pyaudio
+# - Strongly prefer Python 3.12 or 3.13 on Windows for best wheel availability
+#   with torch, faster-whisper, pygame, pyaudio, etc.
