@@ -38,7 +38,7 @@ pip install -r requirements.txt
 
 **RI-Instruct is not available on the Ollama registry.** You must download the GGUF + Modelfile from Hugging Face and import it locally.
 
-The official `Modelfile` lives in the model repo: https://huggingface.co/RishiSpace/RI-Instruct-v0.1-GGUF
+The official `Modelfile` lives in the model repo: https://huggingface.co/RishiSpace/RI-Instruct-v0.2-GGUF
 
 Always download the latest Modelfile from Hugging Face (do not rely on a local copy) to avoid version mismatches.
 
@@ -46,8 +46,8 @@ Run the following **from inside the RI directory**:
 
 ```bash
 # 1. Download the model weights (~5.9 GB) and the official Modelfile
-hf download RishiSpace/RI-Instruct-v0.1-GGUF \
-  RI-Instruct-v0.1-Q5_K_M.gguf Modelfile --local-dir .
+hf download RishiSpace/RI-Instruct-v0.2-GGUF \
+  RI-Instruct-v0.2-Q5_K_M.gguf Modelfile --local-dir .
 
 # 2. Import it into Ollama (creates the "ri-instruct:latest" tag)
 ollama create ri-instruct:latest -f Modelfile
@@ -64,11 +64,11 @@ You should see `ri-instruct:latest`.
 **Alternative** (no `hf` CLI):
 
 ```bash
-curl -L -o RI-Instruct-v0.1-Q5_K_M.gguf \
-  https://huggingface.co/RishiSpace/RI-Instruct-v0.1-GGUF/resolve/main/RI-Instruct-v0.1-Q5_K_M.gguf
+curl -L -o RI-Instruct-v0.2-Q5_K_M.gguf \
+  https://huggingface.co/RishiSpace/RI-Instruct-v0.2-GGUF/resolve/main/RI-Instruct-v0.2-Q5_K_M.gguf
 
 curl -L -o Modelfile \
-  https://huggingface.co/RishiSpace/RI-Instruct-v0.1-GGUF/raw/main/Modelfile
+  https://huggingface.co/RishiSpace/RI-Instruct-v0.2-GGUF/raw/main/Modelfile
 ```
 
 The `Modelfile` and `.gguf` must be in the same directory when running `ollama create`.
@@ -142,6 +142,61 @@ RI_THINK=1 ./venv/bin/python main.py
 ```
 
 If wake never triggers, you'll still see `[heard] "your words"` — that means mic works but wake word wasn't matched. Try `RI_VERBOSE=1` or `RI_MIC_INDEX=11` (pulse device).
+
+## Packaging (binaries)
+
+RI can be packaged into standalone executables with PyInstaller.
+
+### Linux
+
+From the project root:
+
+```bash
+# 1. Make sure your venv has everything (or use system python with all deps)
+# 2. Build
+bash scripts/build_linux.sh
+# or manually:
+python -m PyInstaller RI.spec --clean --noconfirm
+```
+
+Result: `dist/RI/RI` (the executable) + `dist/RI/_internal/` (all bundled libs).
+
+Run:
+
+```bash
+./dist/RI/RI --mode text
+```
+
+**Size note**: Expect 6–8+ GB because of PyTorch + faster-whisper + onnxruntime.
+
+### Windows
+
+1. On a **Windows** machine (cross-building from Linux is unreliable for this stack):
+   - `python -m venv venv`
+   - `venv\Scripts\activate`
+   - `pip install -r requirements.txt pyinstaller`
+2. Run:
+
+   ```bat
+   scripts\build_windows.bat
+   ```
+
+Or directly:
+
+```bat
+python -m PyInstaller RI.spec --clean --noconfirm
+```
+
+Result: `dist\RI\RI.exe`
+
+### Important notes about binaries
+
+- **Ollama is not bundled**. The user must install and run `ollama serve` + have the `ri-instruct:latest` model created.
+- **Native system libraries** are still required on the target:
+  - Linux: `tk`, `portaudio`, `ffmpeg`, `espeak-ng`, `xclip`/`wl-clipboard`, `xdotool` (or equivalent for your DE).
+  - Windows: appropriate Visual C++ runtimes, and audio devices.
+- GUI automation (pyautogui) and audio work best when the corresponding system packages are present.
+- For smaller distributions you can edit `RI.spec` to use more aggressive excludes or switch TTS engine.
 
 ## Legacy
 

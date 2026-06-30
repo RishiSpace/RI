@@ -10,6 +10,13 @@ from ri.audio_env import configure
 configure()
 
 
+def _app_base_dir() -> str:
+    """Return base dir for bundled resources when running as PyInstaller binary."""
+    if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
+        return sys._MEIPASS  # type: ignore[attr-defined]
+    return os.path.dirname(os.path.abspath(__file__))
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="RI — local voice & text PC agent")
     parser.add_argument(
@@ -24,8 +31,15 @@ def main() -> None:
     if args.model:
         os.environ["RI_MODEL"] = args.model
 
+    # Writable dirs (always in user space)
     os.makedirs("./aud", exist_ok=True)
     os.makedirs(os.path.expanduser("~/Pictures/RI-Screenshots"), exist_ok=True)
+
+    # If frozen, ensure we are in a writable CWD for ./aud etc.
+    # (onefile extracts to temp; relative paths still work from launch CWD)
+    if getattr(sys, "frozen", False):
+        # Helpful log for packaged runs
+        print(f"[frozen] running from packaged binary, base={_app_base_dir()}")
 
     if args.mode == "hybrid":
         from ri.interfaces.hybrid import HybridInterface
